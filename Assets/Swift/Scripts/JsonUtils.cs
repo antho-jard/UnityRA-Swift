@@ -30,6 +30,7 @@ namespace Swift
             popupNotifAnim = PopUpNotif.GetComponent<Animator>();
         }
         void Start () {
+             BetterStreamingAssets.Initialize(); 
 	        if(GOmachines == null)
             {
                 GOmachines = GameObject.FindGameObjectsWithTag("Machine");
@@ -70,7 +71,8 @@ namespace Swift
             {
                 configLoaded = true;
                 //Gets all the json files in the StreamingAssets/SavedLayout/ repertory
-                string[] configFiles = Directory.GetFiles(Application.streamingAssetsPath + "/SavedLayout/", "*.json");
+                // string[] configFiles = Directory.GetFiles(Application.streamingAssetsPath + "/SavedLayout/", "*.json");
+                string[] configFiles = BetterStreamingAssets.GetFiles("/SavedLayout/", "*.json");
                 //For each config file we create a button with the name of the file
                 foreach (var filePath in configFiles)
                 {
@@ -93,7 +95,8 @@ namespace Swift
            if (File.Exists(filePath))
             {
                 //read the json file and put it in dataAsJson
-                string dataAsJson = File.ReadAllText(filePath);
+                string dataAsJson = BetterStreamingAssets.ReadAllText(filePath);//File.ReadAllText(filePath);
+                
                 //Pass the json to JsonUtility and create a RootObject (the list of every machines in the savefile)
                 RootObject machinesJson = JsonUtility.FromJson<RootObject>(dataAsJson);
                 //For each machine saved we change the Pos/Rot values of the corresponding GameObject
