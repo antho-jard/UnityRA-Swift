@@ -15,7 +15,6 @@ namespace Swift
         public GameObject GridForButtons; //Canvas with every buttons
         GameObject[] GOmachines;
         GameObject dataManager;
-        GameObject saveConfig;
         GameObject loadConfig;
         GameObject scrollView;
         Animator popupNotifAnim;
@@ -24,13 +23,12 @@ namespace Swift
         private void Awake()
         {
             dataManager = GameObject.Find("DataManager");
-            saveConfig = GameObject.Find("Button_SaveConfig");
             loadConfig = GameObject.Find("Button_LoadConfig");
             scrollView = GameObject.Find("ScrollView");
             popupNotifAnim = PopUpNotif.GetComponent<Animator>();
         }
         void Start () {
-             BetterStreamingAssets.Initialize(); 
+            BetterStreamingAssets.Initialize(); 
 	        if(GOmachines == null)
             {
                 GOmachines = GameObject.FindGameObjectsWithTag("Machine");
@@ -63,7 +61,6 @@ namespace Swift
         public void LoadAndDisplayMachineConfigs()
         {
             //Deactivate the Load & Save buttons and activate the ScrollView
-            saveConfig.SetActive(false);
             loadConfig.SetActive(false);
             scrollView.SetActive(true);
             
@@ -71,7 +68,7 @@ namespace Swift
             {
                 configLoaded = true;
                 //Gets all the json files in the StreamingAssets/SavedLayout/ repertory
-                // string[] configFiles = Directory.GetFiles(Application.streamingAssetsPath + "/SavedLayout/", "*.json");
+                //Desktop: string[] configFiles = Directory.GetFiles(Application.streamingAssetsPath + "/SavedLayout/", "*.json");
                 string[] configFiles = BetterStreamingAssets.GetFiles("/SavedLayout/", "*.json");
                 //For each config file we create a button with the name of the file
                 foreach (var filePath in configFiles)
@@ -92,10 +89,11 @@ namespace Swift
         /// </summary>
         public void LoadSelectedMachineConfig(string filePath)
         { 
-           if (File.Exists(filePath))
+            Debug.Log(filePath);
+           if (BetterStreamingAssets.FileExists(filePath))
             {
-                //read the json file and put it in dataAsJson
-                string dataAsJson = BetterStreamingAssets.ReadAllText(filePath);//File.ReadAllText(filePath);
+                //Read the json file and put it in dataAsJson
+                string dataAsJson = BetterStreamingAssets.ReadAllText(filePath); //Desktop: File.ReadAllText(filePath);
                 
                 //Pass the json to JsonUtility and create a RootObject (the list of every machines in the savefile)
                 RootObject machinesJson = JsonUtility.FromJson<RootObject>(dataAsJson);
@@ -111,7 +109,6 @@ namespace Swift
             {
                 Debug.Log("Path given not found");
             }
-            saveConfig.SetActive(true);
             loadConfig.SetActive(true);
             scrollView.SetActive(false);
         }
